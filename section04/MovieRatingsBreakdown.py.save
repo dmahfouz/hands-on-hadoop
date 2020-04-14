@@ -1,0 +1,36 @@
+from mrjob.job import MRJob
+from mrjob.step import MRStep
+import operator
+
+class MovieRatingsBreakdown(MRJob):
+    def steps(self):
+        return [
+            MRStep(mapper=self.mapper_get_ratings,
+                   reducer=self.reducer_count_ratings),
+	    MRStep(reducer=self.reducer_sorted_output)
+        ]
+
+    def mapper_get_ratings(self, _, line):
+        (userID, movieID, rating, timestamp) = line.split('\t')
+        yield 1, movieID
+
+    def reducer_count_ratings(self, key, values):
+        yield str(sum(values)).zfill(5), key
+
+    def reducer_sorted_output(self, movies, count):
+	d = {}
+        for movie in movies:
+            if not(bool(d)) or movie not in d.keys():
+	        d[movie] = int(count)
+	    else:
+		d[movie] += int(count.decode('utf8'))
+
+	# sorted_movies = sorted(d.items(), key=operator.itemgetter(1))
+	
+	for movie_counts in sorted_movies:
+	    yield movie_counts[0], movie_counts[1]
+	
+
+
+if __name__ == '__main__':
+    MovieRatingsBreakdown.run()
