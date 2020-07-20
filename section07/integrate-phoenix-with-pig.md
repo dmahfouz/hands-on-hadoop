@@ -107,4 +107,22 @@
     - Remember Pig runs on top of MapReduce, so this will be kicking off a number of MapReduce jobs, of which there is some overhead in starting up
     - However once started up, the Pig script will run quite quickly, especially if paralellisation in MapReduce is being taken advantage of
 
-9. 
+9. Clean up:
+
+    ```sh
+    cd /usr/hdp/current/phoenix-client/bin/
+    ```
+
+    Open phoenix shell
+
+    ```sh
+    python sqlline.py
+    ```
+
+    Drop `users` table (feel free to query it before deleting):
+
+    ```sql
+    DROP TABLE USERS;
+    ```
+
+    Check table has been dropped using `!tables` and exit using `!quit` and shutdown HBase in Ambari
